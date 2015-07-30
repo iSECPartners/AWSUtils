@@ -300,14 +300,15 @@ def read_creds_from_aws_credentials_file(profile_name, credentials_file = aws_cr
     secret = None
     mfa_serial = None
     security_token = None
-    re_use_profile = re.compile(r'\[%s\]' % profile_name)
     try:
         with open(credentials_file, 'rt') as credentials:
             for line in credentials:
-                if re_use_profile.match(line):
-                    profile_found = True
-                elif re_profile_name.match(line):
-                    profile_found = False
+                profile_line = re_profile_name.match(line)
+                if profile_line:
+                    if profile_line.groups()[0] == profile_name:
+                        profile_found = True
+                    else:
+                        profile_found = False
                 if profile_found:
                     if re_access_key.match(line):
                         key_id = (line.split(' ')[2]).rstrip()
