@@ -239,7 +239,7 @@ def read_creds_from_ec2_instance_metadata():
         pass
     return creds
 
-def read_creds_from_ecs_container_metadat():
+def read_creds_from_ecs_container_metadata():
     creds = init_creds()
     try:
         ecs_metadata_relative_uri = os.environ['AWS_CONTAINER_CREDENTIALS_RELATIVE_URI']
