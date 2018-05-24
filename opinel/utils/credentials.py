@@ -487,7 +487,6 @@ def read_creds(profile_name, csv_file = None, mfa_serial_arg = None, mfa_code = 
                         credentials['TokenCode'] = mfa_code
                     if 'AccessKeyId' in credentials and credentials['AccessKeyId']:
                         credentials = init_sts_session(profile_name, credentials)
-    if 
     # If we don't have valid creds by now, print an error message
     if 'AccessKeyId' not in credentials or credentials['AccessKeyId'] == None or 'SecretAccessKey' not in credentials or credentials['SecretAccessKey'] == None:
         printError('Error: could not find AWS credentials. Use the --help option for more information.')
