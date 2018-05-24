@@ -239,6 +239,18 @@ def read_creds_from_ec2_instance_metadata():
         pass
     return creds
 
+def read_creds_from_ecs_container_metadata():
+    creds = init_creds()
+    try:
+        ecs_metadata_relative_uri = os.environ['AWS_CONTAINER_CREDENTIALS_RELATIVE_URI']
+        credentials = requests.get('http://169.254.170.2' + relative_uri, timeout = 1).json()
+        for c in ['AccessKeyId', 'SecretAccessKey']:
+            creds[c] = credentials[c]
+            creds['SessionToken'] = credentials['Token']
+    except Exception as e:
+        pass
+    return creds
+
 
 #
 # Read credentials from environment variables
@@ -409,7 +421,10 @@ def read_creds(profile_name, csv_file = None, mfa_serial_arg = None, mfa_code = 
         # Try reading credentials from environment variables (Issue #11) if the profile name is 'default'
         credentials = read_creds_from_environment_variables()
     if ('AccessKeyId' not in credentials or not credentials['AccessKeyId']) and not csv_file and profile_name == 'default':
-        credentials = read_creds_from_ec2_instance_metadata()
+        try:
+            credentials = read_creds_from_ecs_container_metadat()
+        except:
+            credentials = read_creds_from_ec2_instance_metadata()
     if role_arn or (not credentials['AccessKeyId'] and not csv_file):
         # Lookup if a role is defined in ~/.aws/config
         if not role_arn:
