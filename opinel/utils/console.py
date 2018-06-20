@@ -5,6 +5,11 @@ import re
 import sys
 import traceback
 
+try:
+    raw_input          # Python 2
+except NameError:
+    raw_input = input  # Python 3
+
 
 
 ########################################
